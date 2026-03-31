@@ -1,0 +1,95 @@
+<template>
+    <div class="production-card">
+        
+        <div class="card-header">
+            <div class="title-block">
+                <div class="icon-wrapper">
+                    <lightning-icon icon-name="standard:quotes" size="small" variant="inverse"></lightning-icon>
+                </div>
+                <h2 class="card-title">Quote Line Items <span class="badge">({lineItems.length})</span></h2>
+            </div>
+            
+            <div class="header-actions">
+                <button class="btn-primary" data-action="Browse Catalog" onclick={handleHeaderAction}>Browse Catalog</button>
+                <lightning-button-group class="slds-m-left_small">
+                    <lightning-button label="Edit Products" onclick={handleHeaderAction} data-action="Edit Products"></lightning-button>
+                    <lightning-button-menu alternative-text="More Options" menu-alignment="right">
+                        <lightning-menu-item value="sort" label="Sort Lines"></lightning-menu-item>
+                    </lightning-button-menu>
+                </lightning-button-group>
+            </div>
+        </div>
+
+        <template if:true={isLoading}>
+            <div class="loading-state">Loading cart data...</div>
+        </template>
+
+        <template if:false={isLoading}>
+            
+            <!-- HORIZONTAL SCROLL PROTECTOR -->
+            <div class="table-scroll-wrapper">
+                
+                <div class="list-grid list-header-row">
+                    <div class="grid-col">Product</div>
+                    <div class="grid-col">Sales Price</div>
+                    <div class="grid-col">Quantity</div>
+                    <div class="grid-col">Discount</div>
+                    <div class="grid-col">Subtotal</div>
+                    <div class="grid-col-action"></div>
+                </div>
+
+                <template for:each={lineItems} for:item="item">
+                    <div key={item.id} class="list-grid item-row">
+                        
+                        <div class="grid-col product-identity">
+                            <div class="image-box">
+                                <img src={item.image} alt={item.name} />
+                            </div>
+                            <div class="product-text">
+                                <!-- Title now clicks directly to View Details -->
+                                <a class="product-link" data-item-id={item.id} onclick={handleRowAction} value="view">{item.name}</a>
+                                <span class="product-desc">{item.description}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid-col metric-text">
+                            <lightning-formatted-number value={item.unitPrice} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                        </div>
+
+                        <div class="grid-col">
+                            <lightning-input 
+                                type="number" 
+                                value={item.quantity} 
+                                variant="label-hidden" 
+                                class="qty-input"
+                                data-item-id={item.id} 
+                                onchange={handleQuantityChange}>
+                            </lightning-input>
+                        </div>
+
+                        <div class="grid-col metric-text discount-text">
+                            {item.discount}
+                        </div>
+
+                        <div class="grid-col total-text">
+                            <lightning-formatted-number value={item.totalPrice} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                        </div>
+
+                        <div class="grid-col-action">
+                            <lightning-button-menu alternative-text="Show menu" menu-alignment="right" data-item-id={item.id} onselect={handleRowAction} variant="border-filled" icon-size="x-small">
+                                <lightning-menu-item value="edit" label="Edit"></lightning-menu-item>
+                                <lightning-menu-item value="view" label="View Details"></lightning-menu-item>
+                                <lightning-menu-item value="delete" label="Delete"></lightning-menu-item>
+                            </lightning-button-menu>
+                        </div>
+
+                    </div>
+                </template>
+            </div>
+
+            <div class="card-footer">
+                <button class="btn-text" onclick={handleSaveChanges}>Update Quantities</button>
+            </div>
+        </template>
+    </div>
+</template>

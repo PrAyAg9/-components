@@ -1,0 +1,39 @@
+<template>
+    <div class="slds-box slds-theme_default compact-container">
+        
+        <!-- LEFT: The Progress Track -->
+        <div class="track-section">
+            
+            <!-- The connecting lines behind the nodes -->
+            <div class="line-container">
+                <div class="line-background"></div>
+                <div class="line-fill" style={progressFillStyle}></div>
+            </div>
+
+            <!-- The Nodes -->
+            <div class="steps-row">
+                <template for:each={steps} for:item="step">
+                    <div key={step.key} class={step.stepClass} data-stage={step.label} onclick={handleStepClick}>
+                        <div class={step.nodeClass}>
+                            <!-- Dynamic Icon (Will be Check or Close based on JS logic) -->
+                            <template if:true={step.showIcon}>
+                                <lightning-icon icon-name={step.iconName} size="xx-small" class="check-icon"></lightning-icon>
+                            </template>
+                        </div>
+                        <span class="step-label">{step.label}</span>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- RIGHT: The Action Button -->
+        <div class="action-section">
+            <button class="slds-button slds-button_brand modern-btn" onclick={handleActionClick} disabled={isUpdating}>
+                <lightning-icon icon-name="utility:check" size="x-small" variant="inverse" class="btn-icon"></lightning-icon>
+                <template if:false={isUpdating}>{buttonLabel}</template>
+                <template if:true={isUpdating}>Updating...</template>
+            </button>
+        </div>
+
+    </div>
+</template>

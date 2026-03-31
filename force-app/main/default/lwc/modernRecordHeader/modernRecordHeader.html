@@ -1,0 +1,79 @@
+<template>
+    <div class="master-card-container">
+        
+        <!-- TOP HALF -->
+        <div class="header-top-section">
+            <div class="identity-block">
+                <div class="saas-icon-wrapper">
+                    <lightning-icon icon-name="standard:quotes" size="medium" variant="inverse"></lightning-icon>
+                </div>
+                <div class="title-stack">
+                    <span class="eyebrow-text">QUOTE • #{quoteNumber}</span>
+                    <h1 class="record-title">{quoteName}</h1>
+                </div>
+            </div>
+
+            <div class="metrics-block">
+                <div class="metric-group">
+                    <span class="eyebrow-text">Grand Total</span>
+                    <span class="grand-total-highlight">{formattedGrandTotal}</span>
+                </div>
+            </div>
+
+            <div class="actions-block">
+                
+                <!-- DYNAMIC: Loops through Admin-configured Primary Buttons -->
+                <template for:each={visibleActionList} for:item="btnName">
+                    <button key={btnName} class="pill-btn-secondary" data-action={btnName} onclick={handleMainAction}>
+                        {btnName}
+                    </button>
+                </template>
+                
+                <!-- DYNAMIC: Loops through Admin-configured Dropdown Menu Items -->
+                <lightning-button-menu alternative-text="More Actions" menu-alignment="right" onselect={handleMenuSelect} class="custom-dropdown">
+                    <template for:each={dropdownActionList} for:item="menuItem">
+                        <lightning-menu-item key={menuItem.value} value={menuItem.value} label={menuItem.label}></lightning-menu-item>
+                    </template>
+                </lightning-button-menu>
+
+            </div>
+        </div>
+
+        <!-- BOTTOM HALF (Unchanged) -->
+        <div class="header-bottom-section">
+            
+            <div class="grid-field">
+                <span class="field-label">Quote Number</span>
+                <span class="field-value">{quoteNumber}</span>
+            </div>
+
+            <div class="grid-field">
+                <span class="field-label">Expiration Date</span>
+                <span class="field-value">{expirationDate}</span>
+            </div>
+
+            <div class="grid-field">
+                <span class="field-label">Syncing</span>
+                <span class="field-value">{isSyncingText}</span>
+            </div>
+
+            <div class="grid-field">
+                <span class="field-label">Opportunity Name</span>
+                <div class="field-value icon-value-wrapper link-text">
+                    <lightning-icon icon-name="standard:opportunity" size="x-small" class="inline-icon"></lightning-icon>
+                    {opportunityName}
+                </div>
+            </div>
+
+            <div class="grid-field">
+                <span class="field-label">Account Name</span>
+                <div class="field-value icon-value-wrapper link-text">
+                    <lightning-icon icon-name="standard:account" size="x-small" class="inline-icon"></lightning-icon>
+                    {accountName}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</template>

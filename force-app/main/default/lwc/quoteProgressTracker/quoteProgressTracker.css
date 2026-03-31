@@ -1,0 +1,150 @@
+/* Master Layout: Left Tracker, Right Button */
+.compact-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem 1rem 1rem; 
+    background: #ffffff;
+    border-radius: 4px; /* Standard Salesforce radius */
+    border: 1px solid #c9c9c9;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+    gap: 30px;
+}
+
+.track-section {
+    flex-grow: 1; /* Takes up all available left space */
+    position: relative;
+    max-width: 800px; /* Prevents it from stretching too far on giant monitors */
+}
+
+/* --- FIXING THE OVERHANG --- */
+.line-container {
+    position: absolute;
+    top: 14px; /* Aligns vertically with the 28px circles */
+    left: 40px; /* Exactly half of the step-wrapper width */
+    right: 40px; 
+    height: 3px;
+    z-index: 1;
+}
+
+.line-background {
+    width: 100%;
+    height: 100%;
+    background-color: #ecebea; /* Standard SF light gray */
+}
+
+.line-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #0176d3; /* Standard SF Blue */
+    transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* --- THE NODES --- */
+.steps-row {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2; /* Keeps circles above the line */
+}
+
+.step-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px; /* Fixed width makes line-math perfect */
+    cursor: pointer;
+}
+
+.node {
+    width: 28px;
+    height: 28px;
+    background: #ffffff;
+    border: 2px solid #ecebea;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 6px;
+    transition: all 0.3s ease; /* Smooth state changes */
+}
+
+/* Standard SF Status Colors */
+.node-completed {
+    background: #0176d3;
+    border-color: #0176d3;
+}
+
+.node-current-db {
+    background: #ffffff;
+    border-color: #0176d3;
+    box-shadow: 0 0 0 4px rgba(1, 118, 211, 0.15); 
+}
+
+.node-focused {
+    border-color: #0176d3;
+    background: #f3f2f2;
+}
+
+/* --- NEW DYNAMIC COLORS --- */
+/* Green logic */
+.node-success {
+    background: #2e844a; /* Added background so it fills green */
+    border-color: #2e844a; 
+    box-shadow: 0 0 0 4px rgba(46, 132, 74, 0.15);
+}
+
+/* Red logic */
+.node-error {
+    background: #ba0517; 
+    border-color: #ba0517;
+    box-shadow: 0 0 0 4px rgba(186, 5, 23, 0.15);
+}
+
+.step-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #444444; 
+    text-align: center;
+    line-height: 1.2;
+    transition: color 0.2s;
+}
+
+.step-wrapper.text-active .step-label {
+    color: #0176d3;
+}
+
+/* Red text for errors */
+.step-wrapper.text-error .step-label {
+    color: #ba0517;
+}
+
+/* Fix standard icon size inside our circles */
+.check-icon {
+    --sds-c-icon-color-foreground-default: #ffffff;
+}
+
+/* --- THE ACTION BUTTON --- */
+.action-section {
+    flex-shrink: 0; /* Prevents button from being crushed */
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 6px; /* Aligns button nicely with the nodes */
+}
+
+.modern-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 16px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-icon {
+    margin-right: 4px;
+}
