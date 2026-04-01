@@ -1,6 +1,8 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { deleteRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { NavigationMixin } from 'lightning/navigation'; // UNLOCKS STANDARD ROUTING
 
 import QUOTE_NAME_FIELD from '@salesforce/schema/Quote.Name';
 import QUOTE_NUMBER_FIELD from '@salesforce/schema/Quote.QuoteNumber';
@@ -19,24 +21,26 @@ const FIELDS = [
     OPP_NAME_FIELD, ACC_NAME_FIELD
 ];
 
-export default class QuoteRefinedHeader extends LightningElement {
+export default class QuoteRefinedHeader extends NavigationMixin(LightningElement) {
     @api recordId;
     
-    // THE FIX: Assign default strings right here in the JS!
     @api primaryButtons = 'New Contact, New Opportunity, New Lead';
-    @api dropdownMenuActions = 'Edit, Delete, Change Owner, Clone, Generate PDF, Submit for Approval';
+    @api dropdownMenuActions = 'Edit, Delete, Clone, Generate PDF';
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     quote;
-
 
     // --- Data Getters ---
     get quoteName() { return getFieldValue(this.quote.data, QUOTE_NAME_FIELD) || 'Loading...'; }
     get quoteNumber() { return getFieldValue(this.quote.data, QUOTE_NUMBER_FIELD) || '--'; }
     get expirationDate() { return getFieldValue(this.quote.data, QUOTE_EXPIRATION_FIELD) || '--'; }
     get isSyncingText() { return getFieldValue(this.quote.data, QUOTE_SYNCING_FIELD) ? 'Yes' : 'No'; }
+    
+    // Lookups (Text and IDs for clicking)
     get opportunityName() { return getFieldValue(this.quote.data, OPP_NAME_FIELD) || '--'; }
+    get opportunityId() { return getFieldValue(this.quote.data, QUOTE_OPP_ID_FIELD); }
     get accountName() { return getFieldValue(this.quote.data, ACC_NAME_FIELD) || '--'; }
+    get accountId() { return getFieldValue(this.quote.data, QUOTE_ACC_ID_FIELD); }
 
     get formattedGrandTotal() {
         const total = getFieldValue(this.quote.data, QUOTE_GRAND_TOTAL_FIELD);
@@ -45,33 +49,83 @@ export default class QuoteRefinedHeader extends LightningElement {
     }
 
     // --- DYNAMIC ACTION GENERATORS ---
-
     get visibleActionList() {
         if (!this.primaryButtons) return [];
-        // Takes "New Contact, Edit" -> creates an array: ['New Contact', 'Edit']
         return this.primaryButtons.split(',').map(btn => btn.trim()).filter(btn => btn !== '');
     }
 
     get dropdownActionList() {
         if (!this.dropdownMenuActions) return [];
-        // Takes list and creates an object for the menu: { label: 'Edit', value: 'edit' }
         return this.dropdownMenuActions.split(',').map(action => {
             const cleanAction = action.trim();
             return {
                 label: cleanAction,
-                value: cleanAction.toLowerCase().replace(/\s+/g, '_') // replaces spaces with underscores
+                value: cleanAction.toLowerCase().replace(/\s+/g, '_')
             };
         }).filter(action => action.label !== '');
     }
 
-    // --- Action Handlers ---
+    // --- NAVIGATION ENGINE ---
     handleMainAction(event) {
         const action = event.target.dataset.action;
-        this.dispatchEvent(new ShowToastEvent({ title: 'Action Clicked', message: `You clicked ${action}`, variant: 'info' }));
+        this.routeAction(action);
     }
 
     handleMenuSelect(event) {
-        const selectedItemValue = event.detail.value;
-        this.dispatchEvent(new ShowToastEvent({ title: 'Menu Item Selected', message: `You selected: ${selectedItemValue}`, variant: 'success' }));
+        const action = event.detail.value;
+        this.routeAction(action);
+    }
+
+    // Makes the Account/Opp links actually work
+    navigateToRecord(event) {
+        const targetId = event.currentTarget.dataset.id;
+        if (targetId) {
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: { recordId: targetId, actionName: 'view' }
+            });
+        }
+    }
+
+    // The Master Router: Translates string text into Standard Salesforce Actions
+    routeAction(actionName) {
+        const actionKey = actionName.toLowerCase().replace(/\s+/g, '_');
+
+        switch(actionKey) {
+            case 'edit':
+                this[NavigationMixin.Navigate]({ type: 'standard__recordPage', attributes: { recordId: this.recordId, actionName: 'edit' } });
+                break;
+            case 'clone':
+                this[NavigationMixin.Navigate]({ type: 'standard__recordPage', attributes: { recordId: this.recordId, objectApiName: 'Quote', actionName: 'clone' } });
+                break;
+            case 'delete':
+                deleteRecord(this.recordId)
+                    .then(() => {
+                        this.showToast('Success', 'Quote deleted.', 'success');
+                        this[NavigationMixin.Navigate]({ type: 'standard__objectPage', attributes: { objectApiName: 'Quote', actionName: 'home' } });
+                    })
+                    .catch(error => this.showToast('Error', error.body.message, 'error'));
+                break;
+            case 'new_contact':
+                this[NavigationMixin.Navigate]({ type: 'standard__objectPage', attributes: { objectApiName: 'Contact', actionName: 'new' } });
+                break;
+            case 'new_opportunity':
+                this[NavigationMixin.Navigate]({ type: 'standard__objectPage', attributes: { objectApiName: 'Opportunity', actionName: 'new' } });
+                break;
+            case 'new_lead':
+                this[NavigationMixin.Navigate]({ type: 'standard__objectPage', attributes: { objectApiName: 'Lead', actionName: 'new' } });
+                break;
+            case 'generate_pdf':
+            case 'create_pdf':
+                // Standard SF Quote PDF generator URL
+                this[NavigationMixin.Navigate]({ type: 'standard__webPage', attributes: { url: `/quote/quoteTemplateDataViewer.apexp?id=${this.recordId}` } });
+                break;
+            default:
+                this.showToast('Action Not Wired', `The action "${actionName}" requires custom Apex/Flow integration.`, 'info');
+        }
+    }
+
+    showToast(title, message, variant) {
+        this.dispatchEvent(new ShowToastEvent({ title, message, variant }));
     }
 }

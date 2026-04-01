@@ -8,271 +8,54 @@
     overflow: hidden;
 }
 
-/* --- HEADER --- */
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.25rem;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #e5e5e5;
-}
-
-.title-block {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.icon-wrapper {
-    background-color: #2e844a; /* Standard Green */
-    width: 32px;
-    height: 32px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.card-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #181818;
-    margin: 0;
-}
-
-.badge {
-    color: #444444;
-    font-weight: 400;
-}
-
-.header-actions {
-    display: flex;
-    align-items: center;
-}
-
-.btn-primary {
-    background-color: #0176d3;
-    color: #ffffff;
-    border: none;
-    padding: 0 1rem;
-    height: 32px;
-    border-radius: 4px;
-    font-weight: 600;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.btn-primary:hover {
-    background-color: #015ba7;
-}
-
-/* --- STRICT CSS GRID LAYOUT --- */
-/* This is the magic that perfectly aligns everything across rows */
-.list-grid {
-    display: grid;
-    /* Columns: Product(2.5x wide), Price(1x), Qty(80px), Discount(1x), Total(1.2x), Action(50px) */
-    grid-template-columns: minmax(200px, 2.5fr) 1fr 80px 1fr 1.2fr 50px;
-    align-items: center;
+    flex-wrap: wrap; 
     gap: 1rem;
-    padding: 0 1.25rem;
-}
-
-.list-header-row {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #e5e5e5;
-    background-color: #ffffff;
-}
-
-.list-header-row .grid-col {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #444444;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.item-row {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #f3f2f2;
-    transition: background-color 0.2s;
-}
-
-.item-row:hover {
-    background-color: #fafaf9;
-}
-
-.item-row:last-child {
-    border-bottom: none;
-}
-
-/* --- COLUMN CONTENT --- */
-.product-identity {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.image-box {
-    width: 48px;
-    height: 48px;
-    border-radius: 6px;
-    border: 1px solid #e5e5e5;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.image-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Ensures the whole product is visible without cropping */
-}
-
-.product-text {
-    display: flex;
-    flex-direction: column;
-}
-
-.product-link {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #0176d3;
-    text-decoration: none;
-}
-
-.product-link:hover {
-    text-decoration: underline;
-}
-
-.product-desc {
-    font-size: 0.75rem;
-    color: #747474;
-    margin-top: 2px;
-}
-
-.metric-text {
-    font-size: 0.9rem;
-    color: #181818;
-}
-
-.discount-text {
-    color: #2e844a; /* Green to show a positive discount */
-    font-weight: 500;
-}
-
-.total-text {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #181818;
-}
-
-.qty-input {
-    width: 100%;
-    --sds-c-input-color-border: #c9c9c9;
-}
-
-.grid-col-action {
-    display: flex;
-    justify-content: flex-end;
-}
-
-/* --- FOOTER --- */
-.card-footer {
-    display: flex;
-    justify-content: center;
-    padding: 0.75rem;
-    border-top: 1px solid #e5e5e5;
-    background-color: #fafaf9;
-}
-
-.btn-text {
-    background: none;
-    border: none;
-    color: #0176d3;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-}
-
-.btn-text:hover {
-    text-decoration: underline;
-}
-
-.loading-state {
-    padding: 3rem;
-    text-align: center;
-    color: #747474;
-}
-
-.production-card {
-    background-color: #ffffff;
-    border-radius: 8px;
-    border: 1px solid #c9c9c9;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    font-family: 'Salesforce Sans', system-ui, sans-serif;
-    margin-bottom: 1rem;
-    overflow: hidden;
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 1rem 1.25rem;
     background-color: #f8f9fa;
     border-bottom: 1px solid #e5e5e5;
 }
 
 .title-block { display: flex; align-items: center; gap: 12px; }
-.icon-wrapper { background-color: #2e844a; width: 32px; height: 32px; border-radius: 4px; display: flex; justify-content: center; align-items: center; }
+
+/* ICON CHANGED TO VIBRANT ORANGE */
+.icon-wrapper { background-color: #f28b00; width: 32px; height: 32px; border-radius: 4px; display: flex; justify-content: center; align-items: center; }
+.icon-wrapper { --sds-c-icon-color-foreground-default: #ffffff; }
+
 .card-title { font-size: 1rem; font-weight: 700; color: #181818; margin: 0; }
 .badge { color: #444444; font-weight: 400; }
-.header-actions { display: flex; align-items: center; }
+
+.cpq-header-actions { display: flex; align-items: center; }
+.toggle-container { display: flex; align-items: center; gap: 8px; }
+.toggle-label { font-size: 0.75rem; font-weight: 600; color: #444444; }
+.search-container { width: 200px; }
+.product-search-input { --sds-c-input-color-border: #c9c9c9; --sds-c-input-radius-border: 4px; }
 
 .btn-primary {
-    background-color: #0176d3; color: #ffffff; border: none; padding: 0 1rem; height: 32px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: background-color 0.2s;
+    background-color: #0176d3; color: #ffffff; border: none; padding: 0 1.25rem; height: 32px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: background-color 0.2s;
 }
 .btn-primary:hover { background-color: #015ba7; }
 
-/* --- RESPONSIVE WRAPPER --- */
-.table-scroll-wrapper {
-    width: 100%;
-    overflow-x: auto; /* Adds a horizontal scrollbar only if the screen is too small */
-}
+.table-scroll-wrapper { width: 100%; overflow-x: auto; }
 
-/* --- STRICT CSS GRID LAYOUT --- */
+/* STRICT CSS GRID - UPDATED FOR 7 COLUMNS */
 .list-grid {
     display: grid;
-    /* STRICT WIDTHS: Stops columns from shifting when numbers get huge */
-    /* Product | Price | Qty | Discount | Subtotal | Action */
-    grid-template-columns: minmax(220px, 3fr) minmax(110px, 1.5fr) 90px minmax(80px, 1fr) minmax(130px, 1.5fr) 50px;
+    /* Columns: Product | Sales Price | Qty | Subtotal | Discount | Total Price | Action */
+    grid-template-columns: minmax(200px, 3fr) minmax(100px, 1.2fr) 90px minmax(100px, 1.2fr) minmax(80px, 1fr) minmax(110px, 1.5fr) 50px;
     align-items: center;
     gap: 1rem;
     padding: 0 1.25rem;
-    min-width: 800px; /* Minimum width before the scrollbar activates */
+    min-width: 900px; /* Widened slightly to accommodate the extra column */
 }
 
-.list-header-row {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #e5e5e5;
-    background-color: #ffffff;
-}
+.list-header-row { padding-top: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid #e5e5e5; background-color: #ffffff; }
+.list-header-row .grid-col { font-size: 0.7rem; font-weight: 700; color: #444444; text-transform: uppercase; letter-spacing: 0.05em; }
 
-.list-header-row .grid-col {
-    font-size: 0.7rem; font-weight: 700; color: #444444; text-transform: uppercase; letter-spacing: 0.05em;
-}
-
-.item-row {
-    padding-top: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #f3f2f2; transition: background-color 0.2s;
-}
+.item-row { padding-top: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #f3f2f2; transition: background-color 0.2s; }
 .item-row:hover { background-color: #fafaf9; }
 .item-row:last-child { border-bottom: none; }
 
@@ -285,13 +68,7 @@
 .product-link:hover { text-decoration: underline; }
 .product-desc { font-size: 0.75rem; color: #747474; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Force numbers to never wrap to a new line */
-.metric-text, .total-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
+.metric-text, .total-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .metric-text { font-size: 0.9rem; color: #181818; }
 .discount-text { color: #2e844a; font-weight: 500; }
 .total-text { font-size: 0.95rem; font-weight: 700; color: #181818; }
@@ -299,7 +76,11 @@
 .qty-input { width: 100%; --sds-c-input-color-border: #c9c9c9; }
 .grid-col-action { display: flex; justify-content: flex-end; }
 
-.card-footer { display: flex; justify-content: center; padding: 0.75rem; border-top: 1px solid #e5e5e5; background-color: #fafaf9; }
-.btn-text { background: none; border: none; color: #0176d3; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
-.btn-text:hover { text-decoration: underline; }
+.card-footer { display: flex; justify-content: center; padding: 0.75rem; border-top: 1px solid #e5e5e5; background-color: #fafaf9; min-height: 48px; align-items: center;}
+.view-all-link { color: #0176d3; font-weight: 600; font-size: 0.85rem; cursor: pointer; text-decoration: none; }
+.view-all-link:hover { text-decoration: underline; }
+
+.footer-edit-actions { display: flex; justify-content: center; align-items: center; width: 100%; }
+.btn-neutral { background-color: #ffffff; color: #0176d3; border: 1px solid #c9c9c9; padding: 0 1.25rem; height: 32px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: background-color 0.2s; }
+.btn-neutral:hover { background-color: #f3f2f2; }
 .loading-state { padding: 3rem; text-align: center; color: #747474; }

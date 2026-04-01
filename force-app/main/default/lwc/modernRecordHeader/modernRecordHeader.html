@@ -1,14 +1,13 @@
 <template>
     <div class="master-card-container">
         
-        <!-- TOP HALF -->
         <div class="header-top-section">
             <div class="identity-block">
                 <div class="saas-icon-wrapper">
                     <lightning-icon icon-name="standard:quotes" size="medium" variant="inverse"></lightning-icon>
                 </div>
                 <div class="title-stack">
-                    <span class="eyebrow-text">QUOTE • #{quoteNumber}</span>
+                    <span class="eyebrow-text">Quote • {quoteNumber}</span>
                     <h1 class="record-title">{quoteName}</h1>
                 </div>
             </div>
@@ -21,25 +20,20 @@
             </div>
 
             <div class="actions-block">
-                
-                <!-- DYNAMIC: Loops through Admin-configured Primary Buttons -->
                 <template for:each={visibleActionList} for:item="btnName">
                     <button key={btnName} class="pill-btn-secondary" data-action={btnName} onclick={handleMainAction}>
                         {btnName}
                     </button>
                 </template>
                 
-                <!-- DYNAMIC: Loops through Admin-configured Dropdown Menu Items -->
-                <lightning-button-menu alternative-text="More Actions" menu-alignment="right" onselect={handleMenuSelect} class="custom-dropdown">
+                <lightning-button-menu alternative-text="More Actions" menu-alignment="right" onselect={handleMenuSelect} class="custom-dropdown slds-m-left_xx-small">
                     <template for:each={dropdownActionList} for:item="menuItem">
                         <lightning-menu-item key={menuItem.value} value={menuItem.value} label={menuItem.label}></lightning-menu-item>
                     </template>
                 </lightning-button-menu>
-
             </div>
         </div>
 
-        <!-- BOTTOM HALF (Unchanged) -->
         <div class="header-bottom-section">
             
             <div class="grid-field">
@@ -59,7 +53,7 @@
 
             <div class="grid-field">
                 <span class="field-label">Opportunity Name</span>
-                <div class="field-value icon-value-wrapper link-text">
+                <div class="field-value icon-value-wrapper link-text" data-id={opportunityId} onclick={navigateToRecord}>
                     <lightning-icon icon-name="standard:opportunity" size="x-small" class="inline-icon"></lightning-icon>
                     {opportunityName}
                 </div>
@@ -67,7 +61,7 @@
 
             <div class="grid-field">
                 <span class="field-label">Account Name</span>
-                <div class="field-value icon-value-wrapper link-text">
+                <div class="field-value icon-value-wrapper link-text" data-id={accountId} onclick={navigateToRecord}>
                     <lightning-icon icon-name="standard:account" size="x-small" class="inline-icon"></lightning-icon>
                     {accountName}
                 </div>
