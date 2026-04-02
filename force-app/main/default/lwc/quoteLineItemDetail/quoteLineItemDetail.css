@@ -1,0 +1,531 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * QUOTE LINE ITEM DETAIL — Amazon/Flipkart-Style Product Page
+ * Premium design with hero layout, pricing block, specs table
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.detail-page {
+    font-family: 'Salesforce Sans', system-ui, -apple-system, sans-serif;
+    background: #f1f5f9;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* ─── BREADCRUMB NAVIGATION BAR ───────────────────────────────── */
+.breadcrumb-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 2rem;
+    background: linear-gradient(135deg, #0176d3 0%, #014486 100%);
+    color: #ffffff;
+}
+
+.breadcrumb-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.breadcrumb-back:hover {
+    opacity: 0.85;
+    text-decoration: underline;
+}
+
+.back-chevron {
+    --sds-c-icon-color-foreground-default: #ffffff;
+}
+
+.breadcrumb-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.breadcrumb-quote-num {
+    opacity: 0.9;
+}
+
+.breadcrumb-separator {
+    opacity: 0.5;
+}
+
+.status-badge {
+    --sds-c-badge-color-background: rgba(255, 255, 255, 0.2);
+    --sds-c-badge-text-color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+/* ─── HERO SECTION (2-column layout) ──────────────────────────── */
+.hero-section {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 0;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* --- Image Column --- */
+.image-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    border-right: 1px solid #f1f5f9;
+    background: #fafbfc;
+}
+
+.image-frame {
+    width: 100%;
+    max-width: 380px;
+    aspect-ratio: 1;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.image-frame:hover {
+    transform: scale(1.03);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+.main-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 1.5rem;
+}
+
+.image-footer {
+    margin-top: 1rem;
+}
+
+.availability-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.availability-badge.available {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.availability-badge.unavailable {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.avail-icon {
+    --sds-c-icon-color-foreground-default: currentColor;
+}
+
+/* --- Info Column --- */
+.info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 2rem 2.5rem;
+}
+
+/* Product Name Block */
+.product-header-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.family-tag {
+    display: inline-block;
+    width: fit-content;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #1e40af;
+    background: #dbeafe;
+    padding: 3px 12px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.product-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.product-sku {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+}
+
+.divider {
+    height: 1px;
+    background: #e2e8f0;
+    width: 100%;
+}
+
+/* ─── PRICING BLOCK (Amazon-style) ────────────────────────────── */
+.pricing-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.price-row-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.price-label-small {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.price-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.price-rupee {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #0f172a;
+    margin-top: 2px;
+}
+
+.price-amount {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.discount-pill {
+    display: inline-flex;
+    align-items: center;
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.price-breakdown-row {
+    margin-top: 2px;
+}
+
+.breakdown-text {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.mrp-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.mrp-label {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.mrp-value {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.savings-text {
+    font-size: 0.8rem;
+    color: #15803d;
+    font-weight: 600;
+}
+
+.list-price-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.list-label {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.list-value {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* ─── KEY HIGHLIGHTS ──────────────────────────────────────────── */
+.highlights-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.highlights-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.highlights-icon {
+    --sds-c-icon-color-foreground-default: #64748b;
+}
+
+.highlights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.highlight-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.875rem 1rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.highlight-card:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+.hl-icon {
+    --sds-c-icon-color-foreground-default: #0176d3;
+    flex-shrink: 0;
+}
+
+.hl-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.hl-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.hl-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+/* ─── ACTION BUTTONS ──────────────────────────────────────────── */
+.action-buttons-row {
+    display: flex;
+    align-items: center;
+    padding-top: 0.25rem;
+}
+
+/* ─── BOTTOM DETAIL SECTIONS ──────────────────────────────────── */
+.bottom-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.detail-card {
+    background: #ffffff;
+    padding: 1.75rem 2.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.detail-card:last-child {
+    border-bottom: none;
+    border-radius: 0 0 12px 12px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #0176d3;
+}
+
+.section-icon {
+    --sds-c-icon-color-foreground-default: #0176d3;
+}
+
+.description-body {
+    font-size: 0.9rem;
+    color: #334155;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ─── SPECIFICATIONS TABLE ────────────────────────────────────── */
+.specs-table {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.spec-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.spec-row:last-child {
+    border-bottom: none;
+}
+
+.spec-row-alt {
+    background: #f8fafc;
+}
+
+.spec-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #64748b;
+    padding: 0.75rem 1.25rem;
+    border-right: 1px solid #e2e8f0;
+    text-transform: capitalize;
+}
+
+.spec-value {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #0f172a;
+    padding: 0.75rem 1.25rem;
+}
+
+/* ─── LOADING SKELETON ────────────────────────────────────────── */
+.skeleton-bar {
+    height: 44px;
+    background: linear-gradient(135deg, #0176d3 0%, #014486 100%);
+}
+
+.skeleton-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+    padding: 2rem;
+    background: #ffffff;
+}
+
+.skeleton-image {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 16px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeleton-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 1rem;
+}
+
+.skeleton-line {
+    height: 20px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.w30 { width: 30%; }
+.w40 { width: 40%; }
+.w60 { width: 60%; }
+.w80 { width: 80%; }
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .hero-section {
+        grid-template-columns: 1fr;
+    }
+
+    .image-column {
+        border-right: none;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 1.5rem;
+    }
+
+    .info-column {
+        padding: 1.5rem;
+    }
+
+    .highlights-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .spec-row {
+        grid-template-columns: 140px 1fr;
+    }
+
+    .breadcrumb-bar {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}

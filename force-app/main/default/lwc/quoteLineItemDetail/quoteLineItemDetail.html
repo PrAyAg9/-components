@@ -1,0 +1,227 @@
+<template>
+    <!-- ═══ LOADING SKELETON ═══ -->
+    <template if:true={isLoading}>
+        <div class="detail-page">
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-container">
+                <div class="skeleton-image"></div>
+                <div class="skeleton-info">
+                    <div class="skeleton-line w60"></div>
+                    <div class="skeleton-line w40"></div>
+                    <div class="skeleton-line w80"></div>
+                    <div class="skeleton-line w30"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- ═══ MAIN DETAIL PAGE ═══ -->
+    <template if:false={isLoading}>
+        <div class="detail-page">
+
+            <!-- ─── BREADCRUMB NAV BAR ─── -->
+            <div class="breadcrumb-bar">
+                <a class="breadcrumb-back" onclick={navigateToQuote}>
+                    <lightning-icon icon-name="utility:chevronleft" size="xx-small" class="back-chevron"></lightning-icon>
+                    Back to {quoteName}
+                </a>
+                <div class="breadcrumb-meta">
+                    <span class="breadcrumb-quote-num">Quote #{quoteNumber}</span>
+                    <span class="breadcrumb-separator">•</span>
+                    <lightning-badge label={quoteStatus} class="status-badge"></lightning-badge>
+                </div>
+            </div>
+
+            <!-- ─── HERO SECTION: Image + Product Info ─── -->
+            <div class="hero-section">
+                
+                <!-- LEFT: Product Image -->
+                <div class="image-column">
+                    <div class="image-frame">
+                        <img src={productImage} alt={productName} class="main-product-image" />
+                    </div>
+                    <div class="image-footer">
+                        <template if:true={isProductActive}>
+                            <span class="availability-badge available">
+                                <lightning-icon icon-name="utility:check" size="xx-small" class="avail-icon"></lightning-icon>
+                                Active Product
+                            </span>
+                        </template>
+                        <template if:false={isProductActive}>
+                            <span class="availability-badge unavailable">
+                                <lightning-icon icon-name="utility:close" size="xx-small" class="avail-icon"></lightning-icon>
+                                Inactive Product
+                            </span>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Product Info -->
+                <div class="info-column">
+
+                    <!-- Name & Meta -->
+                    <div class="product-header-block">
+                        <template if:true={productFamily}>
+                            <span class="family-tag">{productFamily}</span>
+                        </template>
+                        <h1 class="product-title">{productName}</h1>
+                        <template if:true={productCode}>
+                            <span class="product-sku">SKU: {productCode}</span>
+                        </template>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- ─── PRICING BLOCK (Amazon-style) ─── -->
+                    <div class="pricing-block">
+                        <div class="price-row-main">
+                            <span class="price-label-small">Total Price</span>
+                            <div class="price-value-row">
+                                <span class="price-rupee">₹</span>
+                                <span class="price-amount">{totalPriceFormatted}</span>
+                                <template if:true={hasDiscount}>
+                                    <span class="discount-pill">{discountText} OFF</span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="price-breakdown-row">
+                            <span class="breakdown-text">
+                                {formattedUnitPrice} × {quantity} {unitOfMeasure}
+                            </span>
+                        </div>
+
+                        <template if:true={hasDiscount}>
+                            <div class="mrp-row">
+                                <span class="mrp-label">M.R.P.: </span>
+                                <span class="mrp-value">{formattedSubtotal}</span>
+                                <span class="savings-text">You save {formattedSavings}</span>
+                            </div>
+                        </template>
+
+                        <template if:true={listPrice}>
+                            <div class="list-price-row">
+                                <span class="list-label">List Price: </span>
+                                <span class="list-value">{formattedListPrice}</span>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- ─── KEY HIGHLIGHTS ─── -->
+                    <div class="highlights-block">
+                        <h3 class="highlights-title">
+                            <lightning-icon icon-name="utility:info" size="xx-small" class="highlights-icon"></lightning-icon>
+                            Key Details
+                        </h3>
+                        <div class="highlights-grid">
+                            <div class="highlight-card">
+                                <lightning-icon icon-name="utility:package" size="x-small" class="hl-icon"></lightning-icon>
+                                <div class="hl-text">
+                                    <span class="hl-label">Quantity</span>
+                                    <span class="hl-value">{quantity} {unitOfMeasure}</span>
+                                </div>
+                            </div>
+                            <div class="highlight-card">
+                                <lightning-icon icon-name="utility:moneybag" size="x-small" class="hl-icon"></lightning-icon>
+                                <div class="hl-text">
+                                    <span class="hl-label">Unit Price</span>
+                                    <span class="hl-value">{formattedUnitPrice}</span>
+                                </div>
+                            </div>
+                            <template if:true={serviceDate}>
+                                <div class="highlight-card">
+                                    <lightning-icon icon-name="utility:event" size="x-small" class="hl-icon"></lightning-icon>
+                                    <div class="hl-text">
+                                        <span class="hl-label">Service Date</span>
+                                        <span class="hl-value">{serviceDate}</span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={productCode}>
+                                <div class="highlight-card">
+                                    <lightning-icon icon-name="utility:identity" size="x-small" class="hl-icon"></lightning-icon>
+                                    <div class="hl-text">
+                                        <span class="hl-label">Product Code</span>
+                                        <span class="hl-value">{productCode}</span>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- ─── ACTION BUTTONS ─── -->
+                    <div class="action-buttons-row">
+                        <lightning-button-group>
+                            <lightning-button label="Edit Line Item" variant="brand" icon-name="utility:edit" onclick={handleEdit}></lightning-button>
+                            <lightning-button label="Clone" icon-name="utility:copy" onclick={handleClone}></lightning-button>
+                        </lightning-button-group>
+                        <lightning-button label="Delete" variant="destructive-text" icon-name="utility:delete" onclick={handleDelete} class="slds-m-left_medium"></lightning-button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── BOTTOM DETAIL SECTIONS ─── -->
+            <div class="bottom-sections">
+
+                <!-- Product Description -->
+                <template if:true={productDescription}>
+                    <div class="detail-card">
+                        <h2 class="section-title">
+                            <lightning-icon icon-name="utility:description" size="x-small" class="section-icon"></lightning-icon>
+                            Product Description
+                        </h2>
+                        <p class="description-body">{productDescription}</p>
+                    </div>
+                </template>
+
+                <!-- Line Item Notes -->
+                <template if:true={lineDescription}>
+                    <div class="detail-card">
+                        <h2 class="section-title">
+                            <lightning-icon icon-name="utility:note" size="x-small" class="section-icon"></lightning-icon>
+                            Line Item Notes
+                        </h2>
+                        <p class="description-body">{lineDescription}</p>
+                    </div>
+                </template>
+
+                <!-- Specifications Table -->
+                <div class="detail-card">
+                    <h2 class="section-title">
+                        <lightning-icon icon-name="utility:list" size="x-small" class="section-icon"></lightning-icon>
+                        Product Specifications
+                    </h2>
+                    <div class="specs-table">
+                        <template for:each={specifications} for:item="spec">
+                            <div key={spec.key} class={spec.rowClass}>
+                                <span class="spec-label">{spec.label}</span>
+                                <span class="spec-value">{spec.value}</span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Editable Record Form -->
+                <div class="detail-card">
+                    <h2 class="section-title">
+                        <lightning-icon icon-name="utility:edit_form" size="x-small" class="section-icon"></lightning-icon>
+                        Edit Line Item Details
+                    </h2>
+                    <lightning-record-form
+                        record-id={recordId}
+                        object-api-name="QuoteLineItem"
+                        fields={editableFields}
+                        mode="view"
+                        columns="2"
+                        density="comfy">
+                    </lightning-record-form>
+                </div>
+            </div>
+
+        </div>
+    </template>
+</template>

@@ -1,6 +1,7 @@
 <template>
     <div class="production-card">
         
+        <!-- ═══ CARD HEADER ═══ -->
         <div class="card-header">
             <div class="title-block">
                 <div class="icon-wrapper">
@@ -10,37 +11,84 @@
             </div>
             
             <div class="cpq-header-actions">
+                <!-- Instant Pricing Toggle -->
                 <div class="toggle-container slds-m-right_medium">
                     <span class="toggle-label">Instant pricing</span>
                     <lightning-input type="toggle" variant="label-hidden" message-toggle-active="" message-toggle-inactive="" onchange={handleInstantPricingToggle}></lightning-input>
                 </div>
 
+                <!-- Action Buttons -->
                 <lightning-button-group class="slds-m-right_medium">
-                    <lightning-button label="Bulk Delete" onclick={handleBulkDelete}></lightning-button>
-                    <lightning-button label="Add Group" onclick={handleAddGroup}></lightning-button>
-                    <lightning-button label="Reprice All" onclick={handleRepriceAll}></lightning-button>
+                    <lightning-button label={bulkDeleteLabel} onclick={handleBulkDelete} icon-name="utility:delete"></lightning-button>
+                    <lightning-button label="Add Group" onclick={handleAddGroup} icon-name="utility:add"></lightning-button>
+                    <lightning-button label="Reprice All" onclick={handleRepriceAll} icon-name="utility:refresh"></lightning-button>
                 </lightning-button-group>
 
+                <!-- Product Search with Dropdown -->
                 <div class="search-container">
                     <lightning-input 
                         type="search" 
                         placeholder="Add product..." 
                         variant="label-hidden" 
+                        value={searchTerm}
                         onchange={handleProductSearch}
+                        onfocusout={handleSearchBlur}
                         class="product-search-input">
                     </lightning-input>
+
+                    <!-- Search Results Dropdown -->
+                    <template if:true={isSearchDropdownOpen}>
+                        <div class="search-dropdown">
+                            <template if:true={isSearching}>
+                                <div class="search-dropdown-loading">
+                                    <lightning-spinner alternative-text="Searching..." size="small"></lightning-spinner>
+                                </div>
+                            </template>
+                            <template if:false={isSearching}>
+                                <template if:true={searchResults.length}>
+                                    <template for:each={searchResults} for:item="product">
+                                        <div key={product.pricebookEntryId} class="search-result-item" 
+                                             data-id={product.pricebookEntryId} onclick={handleAddFromSearch}>
+                                            <img src={product.displayImage} alt={product.name} class="search-result-img" />
+                                            <div class="search-result-info">
+                                                <span class="search-result-name">{product.name}</span>
+                                                <span class="search-result-family">{product.family}</span>
+                                            </div>
+                                            <div class="search-result-price">
+                                                <lightning-formatted-number value={product.unitPrice} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                                            </div>
+                                            <lightning-icon icon-name="utility:add" size="xx-small" class="search-result-add"></lightning-icon>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template if:false={searchResults.length}>
+                                    <div class="search-dropdown-empty">No products found</div>
+                                </template>
+                            </template>
+                        </div>
+                    </template>
                 </div>
+
             </div>
         </div>
 
+        <!-- ═══ LOADING STATE ═══ -->
         <template if:true={isLoading}>
-            <div class="loading-state">Loading engine...</div>
+            <div class="loading-state">
+                <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+                <span class="loading-text">Loading engine...</span>
+            </div>
         </template>
 
+        <!-- ═══ TABLE CONTENT ═══ -->
         <template if:false={isLoading}>
             <div class="table-scroll-wrapper">
                 
+                <!-- Header Row (8 columns: checkbox + 6 data + action) -->
                 <div class="list-grid list-header-row">
+                    <div class="grid-col-check">
+                        <lightning-input type="checkbox" variant="label-hidden" checked={selectAll} onchange={handleSelectAll}></lightning-input>
+                    </div>
                     <div class="grid-col">Product</div>
                     <div class="grid-col">Sales Price</div>
                     <div class="grid-col">Quantity</div>
@@ -50,23 +98,32 @@
                     <div class="grid-col-action"></div>
                 </div>
 
+                <!-- Data Rows -->
                 <template for:each={displayedLineItems} for:item="item">
-                    <div key={item.id} class="list-grid item-row">
+                    <div key={item.id} class="list-grid item-row" data-selected={item.isSelected}>
                         
+                        <!-- Checkbox -->
+                        <div class="grid-col-check">
+                            <lightning-input type="checkbox" variant="label-hidden" data-item-id={item.id} checked={item.isSelected} onchange={handleRowSelect}></lightning-input>
+                        </div>
+
+                        <!-- Product -->
                         <div class="grid-col product-identity">
                             <div class="image-box">
                                 <img src={item.image} alt={item.name} />
                             </div>
                             <div class="product-text">
-                                <a class="product-link" data-item-id={item.id} onclick={handleRowAction} value="view">{item.name}</a>
+                                <a class="product-link" data-item-id={item.id} onclick={handleProductNameClick}>{item.name}</a>
                                 <span class="product-desc">{item.description}</span>
                             </div>
                         </div>
 
+                        <!-- Sales Price -->
                         <div class="grid-col metric-text">
                             <lightning-formatted-number value={item.unitPrice} format-style="currency" currency-code="INR"></lightning-formatted-number>
                         </div>
 
+                        <!-- Quantity -->
                         <div class="grid-col">
                             <lightning-input 
                                 type="number" 
@@ -78,18 +135,22 @@
                             </lightning-input>
                         </div>
 
+                        <!-- Subtotal -->
                         <div class="grid-col metric-text">
                             <lightning-formatted-number value={item.subtotal} format-style="currency" currency-code="INR"></lightning-formatted-number>
                         </div>
 
+                        <!-- Discount -->
                         <div class="grid-col metric-text discount-text">
                             {item.discount}
                         </div>
 
+                        <!-- Total Price -->
                         <div class="grid-col total-text">
                             <lightning-formatted-number value={item.totalPrice} format-style="currency" currency-code="INR"></lightning-formatted-number>
                         </div>
 
+                        <!-- Row Actions Menu -->
                         <div class="grid-col-action">
                             <lightning-button-menu alternative-text="Show menu" menu-alignment="right" data-item-id={item.id} onselect={handleRowAction} variant="border-filled" icon-size="x-small">
                                 <lightning-menu-item value="edit" label="Edit"></lightning-menu-item>
@@ -102,6 +163,7 @@
                 </template>
             </div>
 
+            <!-- ═══ CARD FOOTER ═══ -->
             <div class="card-footer">
                 <template if:false={isDirty}>
                     <template if:true={hasMoreItems}>

@@ -1,0 +1,121 @@
+<template>
+    <!-- HEADER -->
+    <lightning-modal-header label="Browse Product Catalog"></lightning-modal-header>
+
+    <!-- BODY -->
+    <lightning-modal-body>
+        <div class="modal-content">
+            
+            <!-- Search & Filter Bar -->
+            <div class="search-filter-bar">
+                <div class="search-input-wrapper">
+                    <lightning-input 
+                        type="search" 
+                        placeholder="Search products by name..." 
+                        variant="label-hidden"
+                        value={searchTerm}
+                        onchange={handleSearchInput}
+                        class="search-input">
+                    </lightning-input>
+                </div>
+                <div class="family-filter-wrapper">
+                    <lightning-combobox
+                        label="Product Family"
+                        variant="label-hidden"
+                        placeholder="All Families"
+                        options={familyOptions}
+                        value={selectedFamily}
+                        onchange={handleFamilyChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="result-count">
+                    <template if:true={hasResults}>
+                        <span class="count-badge">{searchResults.length} products found</span>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <template if:true={isSearching}>
+                <div class="spinner-container">
+                    <lightning-spinner alternative-text="Searching..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Search Results Grid -->
+            <template if:false={isSearching}>
+                <template if:true={hasResults}>
+                    <div class="results-grid">
+                        <template for:each={searchResults} for:item="product">
+                            <div key={product.pricebookEntryId} class={product.cardClass} 
+                                 data-id={product.pricebookEntryId} onclick={handleProductSelect}>
+                                <div class="product-card-inner">
+                                    <div class="product-image-container">
+                                        <img src={product.displayImage} alt={product.name} class="product-image" />
+                                    </div>
+                                    <div class="product-info">
+                                        <span class="product-name">{product.name}</span>
+                                        <template if:true={product.family}>
+                                            <span class="product-family-tag">{product.family}</span>
+                                        </template>
+                                        <template if:true={product.description}>
+                                            <span class="product-description">{product.description}</span>
+                                        </template>
+                                    </div>
+                                    <div class="product-price">
+                                        <lightning-formatted-number 
+                                            value={product.unitPrice} 
+                                            format-style="currency" 
+                                            currency-code="INR">
+                                        </lightning-formatted-number>
+                                    </div>
+                                    <div class="product-check">
+                                        <template if:true={product.isSelected}>
+                                            <lightning-icon icon-name="utility:check" size="x-small" variant="inverse" class="check-icon"></lightning-icon>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Empty State -->
+                <template if:false={hasResults}>
+                    <div class="empty-state">
+                        <lightning-icon icon-name="standard:product" size="large"></lightning-icon>
+                        <template if:true={hasSearched}>
+                            <h3>No products found</h3>
+                            <p>Try adjusting your search or filter criteria.</p>
+                        </template>
+                        <template if:false={hasSearched}>
+                            <h3>Search for Products</h3>
+                            <p>Type a product name above to search your catalog.</p>
+                        </template>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-modal-body>
+
+    <!-- FOOTER -->
+    <lightning-modal-footer>
+        <div class="modal-footer-content">
+            <div class="selected-count">
+                <template if:true={hasSelections}>
+                    <lightning-badge label={selectionCountLabel} class="selection-badge"></lightning-badge>
+                </template>
+            </div>
+            <div class="footer-buttons">
+                <lightning-button label="Cancel" onclick={handleCancel}></lightning-button>
+                <lightning-button 
+                    label="Add Selected Products" 
+                    variant="brand" 
+                    onclick={handleAddSelected}
+                    disabled={addButtonDisabled}
+                    class="slds-m-left_small">
+                </lightning-button>
+            </div>
+        </div>
+    </lightning-modal-footer>
+</template>

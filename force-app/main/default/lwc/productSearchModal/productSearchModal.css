@@ -1,0 +1,216 @@
+/* ═══════════════════════════════════════════════════════════
+ * PRODUCT SEARCH MODAL — Premium Catalog Browser
+ * ═══════════════════════════════════════════════════════════ */
+
+.modal-content {
+    min-height: 400px;
+    padding: 0;
+}
+
+/* ─── SEARCH & FILTER BAR ─────────────────────────────────── */
+.search-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.search-input-wrapper {
+    flex: 1;
+    min-width: 200px;
+}
+
+.family-filter-wrapper {
+    width: 180px;
+    flex-shrink: 0;
+}
+
+.result-count {
+    flex-shrink: 0;
+}
+
+.count-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    background: #e2e8f0;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+/* ─── RESULTS GRID ────────────────────────────────────────── */
+.results-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: #e2e8f0;
+    padding: 0;
+}
+
+.product-card {
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.product-card:hover {
+    background: #f1f5f9;
+}
+
+.product-card-selected {
+    background: #eff6ff !important;
+    border-left: 3px solid #0176d3;
+}
+
+.product-card-inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 1.25rem;
+}
+
+/* Product Image */
+.product-image-container {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Product Info */
+.product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.product-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-family-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #0176d3;
+    background: #dbeafe;
+    padding: 1px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: fit-content;
+}
+
+.product-description {
+    font-size: 0.75rem;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Price */
+.product-price {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 90px;
+    text-align: right;
+}
+
+/* Check Icon */
+.product-check {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.product-card-selected .product-check {
+    background: #0176d3;
+}
+
+.check-icon {
+    --sds-c-icon-color-foreground-default: #ffffff;
+}
+
+/* ─── EMPTY STATE ─────────────────────────────────────────── */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    text-align: center;
+    color: #64748b;
+}
+
+.empty-state h3 {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #334155;
+}
+
+.empty-state p {
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+}
+
+/* ─── SPINNER ─────────────────────────────────────────────── */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+/* ─── FOOTER ──────────────────────────────────────────────── */
+.modal-footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.footer-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.selection-badge {
+    --sds-c-badge-color-background: #dbeafe;
+    --sds-c-badge-text-color: #1e40af;
+    font-weight: 600;
+}

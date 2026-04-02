@@ -8,9 +8,9 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
-            <!-- These let the Admin configure the buttons in App Builder -->
-            <property name="primaryButtons" type="String" default="New Contact, New Opportunity, New Lead" label="Primary Buttons (Comma Separated)" />
-            <property name="dropdownMenuActions" type="String" default="Edit, Delete, Change Owner, Clone, Generate PDF, Submit for Approval" label="Dropdown Actions (Comma Separated)" />
+            <!-- Configurable buttons from App Builder -->
+            <property name="primaryButtons" type="String" default="Browse Catalog, Create Contact, Edit" label="Primary Buttons (Comma Separated)" description="Buttons shown directly on the header. Available: Browse Catalog, Create Contact, Edit, New Opportunity, New Lead" />
+            <property name="dropdownMenuActions" type="String" default="Delete, Clone, Change Owner, Submit for Approval, Generate PDF" label="Dropdown Actions (Comma Separated)" description="Actions in the overflow dropdown menu. Available: Delete, Clone, Change Owner, Submit for Approval, Generate PDF, Send Email" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
