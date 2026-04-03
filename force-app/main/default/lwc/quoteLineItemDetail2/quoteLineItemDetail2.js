@@ -1,21 +1,36 @@
-import { LightningElement, api, wire } from 'lwc';
-import { getRecord, deleteRecord } from 'lightning/uiRecordApi';
+import { LightningElement, api, wire, track } from 'lwc';
+import { getRecord, getFieldValue, deleteRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { NavigationMixin } from 'lightning/navigation';
 
-// ─── QuoteLineItem Fields ─────────────────────────────────────
-const QLI_FIELDS = [
+// ─── Import field tokens (safest way for getRecord) ──────────
+import FIELD_QUANTITY from '@salesforce/schema/QuoteLineItem.Quantity';
+import FIELD_UNIT_PRICE from '@salesforce/schema/QuoteLineItem.UnitPrice';
+import FIELD_SUBTOTAL from '@salesforce/schema/QuoteLineItem.Subtotal';
+import FIELD_TOTAL_PRICE from '@salesforce/schema/QuoteLineItem.TotalPrice';
+import FIELD_DISCOUNT from '@salesforce/schema/QuoteLineItem.Discount';
+import FIELD_DESCRIPTION from '@salesforce/schema/QuoteLineItem.Description';
+import FIELD_LIST_PRICE from '@salesforce/schema/QuoteLineItem.ListPrice';
+import FIELD_QUOTE_ID from '@salesforce/schema/QuoteLineItem.QuoteId';
+import FIELD_PRODUCT2_ID from '@salesforce/schema/QuoteLineItem.Product2Id';
+
+// ─── Required fields (core QLI fields — always exist) ────────
+const REQUIRED_FIELDS = [
+    FIELD_QUANTITY,
+    FIELD_UNIT_PRICE,
+    FIELD_SUBTOTAL,
+    FIELD_TOTAL_PRICE,
+    FIELD_DISCOUNT,
+    FIELD_DESCRIPTION,
+    FIELD_LIST_PRICE,
+    FIELD_QUOTE_ID,
+    FIELD_PRODUCT2_ID
+];
+
+// ─── Optional fields (spanning + audit — won't break if missing) ─
+const OPTIONAL_FIELDS = [
     'QuoteLineItem.LineItemNumber',
-    'QuoteLineItem.Quantity',
-    'QuoteLineItem.UnitPrice',
-    'QuoteLineItem.Subtotal',
-    'QuoteLineItem.TotalPrice',
-    'QuoteLineItem.Discount',
-    'QuoteLineItem.Description',
-    'QuoteLineItem.ListPrice',
     'QuoteLineItem.ServiceDate',
-    'QuoteLineItem.QuoteId',
-    'QuoteLineItem.Product2Id',
     // Product2 spanning fields
     'QuoteLineItem.Product2.Name',
     'QuoteLineItem.Product2.Description',
@@ -41,23 +56,44 @@ const PLACEHOLDER_IMAGE = 'https://via.placeholder.com/500/f1f5f9/94a3b8?text=No
 const CURRENCY_FORMAT = { style: 'currency', currency: 'USD' };
 const LOCALE = 'en-IN';
 
-export default class QuoteLineItemDetail extends NavigationMixin(LightningElement) {
+export default class QuoteLineItemDetail2 extends NavigationMixin(LightningElement) {
     @api recordId;
 
     // Tab state
-    activeTab = 'details';
+    @track activeTab = 'details';
 
-    // ─── WIRE: Fetch all QuoteLineItem data ──────────────────────
-    @wire(getRecord, { recordId: '$recordId', fields: QLI_FIELDS })
-    wiredRecord;
+    // Error state
+    @track errorMessage = '';
+
+    // ─── WIRE: fields = required, optionalFields = spanning/audit ─
+    @wire(getRecord, {
+        recordId: '$recordId',
+        fields: REQUIRED_FIELDS,
+        optionalFields: OPTIONAL_FIELDS
+    })
+    wiredRecord({ data, error }) {
+        if (data) {
+            this.record = data;
+            this.errorMessage = '';
+        } else if (error) {
+            this.errorMessage = error.body?.message || JSON.stringify(error);
+            console.error('getRecord error:', JSON.stringify(error));
+        }
+    }
+
+    record;
 
     // ─── LOADING ─────────────────────────────────────────────────
     get isLoading() {
-        return !this.wiredRecord || (!this.wiredRecord.data && !this.wiredRecord.error);
+        return !this.record && !this.errorMessage;
     }
 
     get hasError() {
-        return this.wiredRecord && this.wiredRecord.error;
+        return !!this.errorMessage;
+    }
+
+    get hasData() {
+        return !!this.record;
     }
 
     // ─── TAB GETTERS ─────────────────────────────────────────────
@@ -81,53 +117,53 @@ export default class QuoteLineItemDetail extends NavigationMixin(LightningElemen
 
     // ─── PRODUCT GETTERS ─────────────────────────────────────────
     get productName() {
-        return this._getVal('Product2.Name') || 'Unknown Product';
+        return this._getSpan('Product2', 'Name') || 'Unknown Product';
     }
 
     get productDescription() {
-        return this._getVal('Product2.Description') || '';
+        return this._getSpan('Product2', 'Description') || '';
     }
 
     get productFamily() {
-        return this._getVal('Product2.Family') || '';
+        return this._getSpan('Product2', 'Family') || '';
     }
 
     get productCode() {
-        return this._getVal('Product2.ProductCode') || '';
+        return this._getSpan('Product2', 'ProductCode') || '';
     }
 
     get productImage() {
-        return this._getVal('Product2.DisplayUrl') || PLACEHOLDER_IMAGE;
+        return this._getSpan('Product2', 'DisplayUrl') || PLACEHOLDER_IMAGE;
     }
 
     get isProductActive() {
-        const val = this._getVal('Product2.IsActive');
+        const val = this._getSpan('Product2', 'IsActive');
         return val !== false;
     }
 
     // ─── LINE ITEM GETTERS ───────────────────────────────────────
     get lineItemNumber() {
-        return this._getVal('LineItemNumber') || '00000000';
+        return this._getField('LineItemNumber') || '00000000';
     }
 
     get quantity() {
-        return this._getVal('Quantity') || 0;
+        return getFieldValue(this.record, FIELD_QUANTITY) || 0;
     }
 
     get unitPrice() {
-        return this._getVal('UnitPrice') || 0;
+        return getFieldValue(this.record, FIELD_UNIT_PRICE) || 0;
     }
 
     get subtotal() {
-        return this._getVal('Subtotal') || 0;
+        return getFieldValue(this.record, FIELD_SUBTOTAL) || 0;
     }
 
     get totalPrice() {
-        return this._getVal('TotalPrice') || 0;
+        return getFieldValue(this.record, FIELD_TOTAL_PRICE) || 0;
     }
 
     get discount() {
-        return this._getVal('Discount') || 0;
+        return getFieldValue(this.record, FIELD_DISCOUNT) || 0;
     }
 
     get hasDiscount() {
@@ -135,50 +171,50 @@ export default class QuoteLineItemDetail extends NavigationMixin(LightningElemen
     }
 
     get listPrice() {
-        return this._getVal('ListPrice') || 0;
+        return getFieldValue(this.record, FIELD_LIST_PRICE) || 0;
     }
 
     get lineDescription() {
-        return this._getVal('Description') || 'No description available.';
+        return getFieldValue(this.record, FIELD_DESCRIPTION) || 'No description available.';
     }
 
     get quoteId() {
-        return this._getVal('QuoteId') || '';
+        return getFieldValue(this.record, FIELD_QUOTE_ID) || '';
     }
 
     get product2Id() {
-        return this._getVal('Product2Id') || '';
+        return getFieldValue(this.record, FIELD_PRODUCT2_ID) || '';
     }
 
     // ─── QUOTE GETTERS ──────────────────────────────────────────
     get quoteName() {
-        return this._getVal('Quote.Name') || 'Quote';
+        return this._getSpan('Quote', 'Name') || 'Quote';
     }
 
     get quoteNumber() {
-        return this._getVal('Quote.QuoteNumber') || '--';
+        return this._getSpan('Quote', 'QuoteNumber') || '--';
     }
 
     get quoteStatus() {
-        return this._getVal('Quote.Status') || 'Draft';
+        return this._getSpan('Quote', 'Status') || 'Draft';
     }
 
     // ─── AUDIT GETTERS ──────────────────────────────────────────
     get createdByName() {
-        return this._getVal('CreatedBy.Name') || 'Unknown';
+        return this._getSpan('CreatedBy', 'Name') || 'Unknown';
     }
 
     get lastModifiedByName() {
-        return this._getVal('LastModifiedBy.Name') || 'Unknown';
+        return this._getSpan('LastModifiedBy', 'Name') || 'Unknown';
     }
 
     get createdDate() {
-        const dt = this._getVal('CreatedDate');
+        const dt = this._getField('CreatedDate');
         return dt ? this._formatDateTime(dt) : '';
     }
 
     get lastModifiedDate() {
-        const dt = this._getVal('LastModifiedDate');
+        const dt = this._getField('LastModifiedDate');
         return dt ? this._formatDateTime(dt) : '';
     }
 
@@ -203,12 +239,19 @@ export default class QuoteLineItemDetail extends NavigationMixin(LightningElemen
         return this._formatNum(this.totalPrice);
     }
 
-    get subtotalDisplay() {
-        return this._formatCurrency(this.subtotal);
-    }
-
     get discountText() {
         return `${this.discount}%`;
+    }
+
+    // For the Details tab — matches standard page format (e.g. "6.00%")
+    get discountDisplay() {
+        const d = this.discount;
+        if (!d) return '';
+        return `${Number(d).toFixed(2)}%`;
+    }
+
+    get quantityDisplay() {
+        return Number(this.quantity).toFixed(2);
     }
 
     // ─── TAB ACTIONS ─────────────────────────────────────────────
@@ -278,19 +321,35 @@ export default class QuoteLineItemDetail extends NavigationMixin(LightningElemen
     }
 
     // ─── HELPERS ─────────────────────────────────────────────────
-    _getVal(field) {
-        if (!this.wiredRecord || !this.wiredRecord.data) return null;
-        const parts = field.split('.');
-        let obj = this.wiredRecord.data.fields;
-        for (let i = 0; i < parts.length; i++) {
-            if (!obj || !obj[parts[i]]) return null;
-            if (i < parts.length - 1) {
-                obj = obj[parts[i]].value?.fields;
-            } else {
-                return obj[parts[i]].value;
-            }
+
+    /**
+     * Get a direct field value from the record (non-spanning).
+     * e.g. _getField('LineItemNumber'), _getField('CreatedDate')
+     */
+    _getField(fieldName) {
+        if (!this.record) return null;
+        try {
+            const field = this.record.fields[fieldName];
+            return field ? field.value : null;
+        } catch (e) {
+            return null;
         }
-        return null;
+    }
+
+    /**
+     * Get a spanning relationship field value.
+     * e.g. _getSpan('Product2', 'Name') → record.fields.Product2.value.fields.Name.value
+     */
+    _getSpan(relationship, fieldName) {
+        if (!this.record) return null;
+        try {
+            const rel = this.record.fields[relationship];
+            if (!rel || !rel.value || !rel.value.fields) return null;
+            const field = rel.value.fields[fieldName];
+            return field ? field.value : null;
+        } catch (e) {
+            return null;
+        }
     }
 
     _formatCurrency(value) {

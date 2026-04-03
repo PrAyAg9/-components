@@ -59,8 +59,8 @@ export default class QuoteRefinedHeader extends NavigationMixin(LightningElement
 
     get formattedGrandTotal() {
         const total = getFieldValue(this.quote.data, QUOTE_GRAND_TOTAL_FIELD);
-        if (total === undefined || total === null) return '₹0.00';
-        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(total);
+        if (total === undefined || total === null) return 'USD 0.00';
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total);
     }
 
     // --- DYNAMIC ACTION GENERATORS ---

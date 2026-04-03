@@ -55,7 +55,7 @@
                                                 <span class="search-result-family">{product.family}</span>
                                             </div>
                                             <div class="search-result-price">
-                                                <lightning-formatted-number value={product.unitPrice} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                                                <lightning-formatted-number value={product.unitPrice} format-style="currency" currency-code="USD"></lightning-formatted-number>
                                             </div>
                                             <lightning-icon icon-name="utility:add" size="xx-small" class="search-result-add"></lightning-icon>
                                         </div>
@@ -120,7 +120,7 @@
 
                         <!-- Sales Price -->
                         <div class="grid-col metric-text">
-                            <lightning-formatted-number value={item.unitPrice} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                            <lightning-formatted-number value={item.unitPrice} format-style="currency" currency-code="USD"></lightning-formatted-number>
                         </div>
 
                         <!-- Quantity -->
@@ -137,7 +137,7 @@
 
                         <!-- Subtotal -->
                         <div class="grid-col metric-text">
-                            <lightning-formatted-number value={item.subtotal} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                            <lightning-formatted-number value={item.subtotal} format-style="currency" currency-code="USD"></lightning-formatted-number>
                         </div>
 
                         <!-- Discount -->
@@ -147,7 +147,7 @@
 
                         <!-- Total Price -->
                         <div class="grid-col total-text">
-                            <lightning-formatted-number value={item.totalPrice} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                            <lightning-formatted-number value={item.totalPrice} format-style="currency" currency-code="USD"></lightning-formatted-number>
                         </div>
 
                         <!-- Row Actions Menu -->
