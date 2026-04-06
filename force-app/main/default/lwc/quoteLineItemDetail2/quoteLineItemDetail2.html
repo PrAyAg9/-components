@@ -1,15 +1,22 @@
 <template>
     <!-- ═══ LOADING SKELETON ═══ -->
     <template if:true={isLoading}>
-        <div class="detail-page">
-            <div class="skeleton-hero">
-                <div class="skeleton-image-box"></div>
-                <div class="skeleton-info-box">
-                    <div class="skeleton-line w40"></div>
-                    <div class="skeleton-line w70"></div>
-                    <div class="skeleton-line w50"></div>
-                    <div class="skeleton-line w30"></div>
-                    <div class="skeleton-line w60"></div>
+        <div class="page-wrapper">
+            <div class="breadcrumb-bar">
+                <div class="breadcrumb-inner">
+                    <div class="skeleton-line w30" style="height:14px;"></div>
+                </div>
+            </div>
+            <div class="card-section">
+                <div class="skeleton-hero">
+                    <div class="skeleton-image-box"></div>
+                    <div class="skeleton-info-box">
+                        <div class="skeleton-line w40"></div>
+                        <div class="skeleton-line w70"></div>
+                        <div class="skeleton-line w50"></div>
+                        <div class="skeleton-line w30"></div>
+                        <div class="skeleton-line w60"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -17,212 +24,285 @@
 
     <!-- ═══ ERROR STATE ═══ -->
     <template if:true={hasError}>
-        <div class="detail-page">
-            <div class="error-state">
-                <lightning-icon icon-name="utility:error" size="large" class="error-icon"></lightning-icon>
-                <h2 class="error-title">Unable to load record</h2>
-                <p class="error-msg">{errorMessage}</p>
+        <div class="page-wrapper">
+            <div class="card-section">
+                <div class="error-state">
+                    <div class="error-icon-circle">
+                        <lightning-icon icon-name="utility:error" size="large" class="error-icon"></lightning-icon>
+                    </div>
+                    <h2 class="error-title">Unable to Load Record</h2>
+                    <p class="error-msg">{errorMessage}</p>
+                    <button class="btn-retry" onclick={navigateToQuote}>Return to Quote</button>
+                </div>
             </div>
         </div>
     </template>
 
     <!-- ═══ MAIN DETAIL PAGE ═══ -->
     <template if:true={hasData}>
-        <div class="detail-page">
+        <div class="page-wrapper">
 
-            <!-- ─── HERO SECTION: Image + Product Info ─── -->
-            <div class="hero-section">
-
-                <!-- LEFT: Product Image -->
-                <div class="image-column">
-                    <div class="image-frame">
-                        <img src={productImage} alt={productName} class="main-product-image" />
-                    </div>
+            <!-- ─── BREADCRUMB BAR (Back + Path) ─── -->
+            <div class="breadcrumb-bar">
+                <div class="breadcrumb-inner">
+                    <button class="back-button" onclick={navigateToQuote} title="Back to Quote">
+                        <lightning-icon icon-name="utility:chevronleft" size="xx-small" class="back-icon"></lightning-icon>
+                        <span>Back</span>
+                    </button>
+                    <div class="breadcrumb-divider"></div>
+                    <nav class="breadcrumb-trail" aria-label="Breadcrumb">
+                        <a class="breadcrumb-link" onclick={navigateToQuote}>
+                            <lightning-icon icon-name="standard:quotes" size="xx-small" class="breadcrumb-obj-icon"></lightning-icon>
+                            {quoteName}
+                        </a>
+                        <lightning-icon icon-name="utility:chevronright" size="xx-small" class="breadcrumb-separator"></lightning-icon>
+                        <span class="breadcrumb-current">{productName}</span>
+                    </nav>
                 </div>
+            </div>
 
-                <!-- RIGHT: Product Info + Actions -->
-                <div class="info-column">
+            <!-- ═══ CARD 1: HERO — Product Image + Info + Actions ═══ -->
+            <div class="card-section hero-card">
+                <div class="hero-section">
 
-                    <!-- Product Family Tag -->
-                    <template if:true={productFamily}>
-                        <span class="family-tag">{productFamily}</span>
-                    </template>
+                    <!-- LEFT: Product Image -->
+                    <div class="image-column">
+                        <div class="image-frame">
+                            <img src={productImage} alt={productName} class="main-product-image" />
+                        </div>
+                    </div>
 
-                    <!-- Product Name -->
-                    <h1 class="product-title">{productName}</h1>
+                    <!-- RIGHT: Product Info + Actions -->
+                    <div class="info-column">
 
-                    <!-- Product Description (short) -->
-                    <template if:true={productDescription}>
-                        <p class="product-short-desc">{productDescription}</p>
-                    </template>
+                        <!-- Product Family Tag -->
+                        <template if:true={productFamily}>
+                            <span class="family-tag">{productFamily}</span>
+                        </template>
 
-                    <!-- ─── PRICING BLOCK ─── -->
-                    <div class="pricing-block">
-                        <div class="price-main-row">
-                            <span class="price-rupee">USD </span>
-                            <span class="price-amount">{totalPriceDisplay}</span>
-                            <template if:true={hasDiscount}>
-                                <span class="price-original">{formattedSubtotal}</span>
+                        <!-- Product Name -->
+                        <h1 class="product-title">{productName}</h1>
+
+                        <!-- Product Code -->
+                        <template if:true={productCode}>
+                            <span class="product-code">SKU: {productCode}</span>
+                        </template>
+
+                        <!-- Product Description (short) -->
+                        <template if:true={productDescription}>
+                            <p class="product-short-desc">{productDescription}</p>
+                        </template>
+
+                        <!-- ─── PRICING BLOCK ─── -->
+                        <div class="pricing-block">
+                            <div class="price-main-row">
+                                <span class="price-label">USD</span>
+                                <span class="price-amount">{totalPriceDisplay}</span>
+                                <template if:true={hasDiscount}>
+                                    <span class="price-original">{formattedSubtotal}</span>
+                                    <span class="discount-badge">-{discountText}</span>
+                                </template>
+                            </div>
+                            <template if:true={listPrice}>
+                                <div class="list-price-row">
+                                    <span class="list-label">List Price:</span>
+                                    <span class="list-value">{formattedListPrice}</span>
+                                </div>
                             </template>
                         </div>
-                        <template if:true={listPrice}>
-                            <div class="list-price-row">
-                                <span class="list-label">List Price:</span>
-                                <span class="list-value">{formattedListPrice}</span>
+
+                        <!-- ─── QUANTITY + ACTION BOX ─── -->
+                        <div class="action-box">
+                            <div class="quantity-row">
+                                <span class="qty-label">Quantity</span>
+                                <div class="qty-display">
+                                    <span class="qty-value">{quantity}</span>
+                                </div>
                             </div>
-                        </template>
-                    </div>
 
-                    <!-- ─── QUANTITY + ACTION BOX ─── -->
-                    <div class="action-box">
-                        <div class="quantity-row">
-                            <span class="qty-label">QUANTITY</span>
-                            <div class="qty-display">
-                                <span class="qty-value">{quantity}</span>
+                            <div class="action-buttons">
+                                <button class="btn-edit-line" onclick={handleEdit}>
+                                    <lightning-icon icon-name="utility:edit" size="xx-small" class="btn-icon-white"></lightning-icon>
+                                    Edit Line Item
+                                </button>
+                                <button class="btn-delete-line" onclick={handleDelete}>
+                                    <lightning-icon icon-name="utility:delete" size="xx-small" class="btn-icon-red"></lightning-icon>
+                                    Delete
+                                </button>
                             </div>
+
+                            <a class="back-to-quote-link" onclick={handleDiscountQuoteEntry}>
+                                <lightning-icon icon-name="utility:chevronleft" size="xx-small" class="dq-icon"></lightning-icon>
+                                Back to Quote Entry
+                            </a>
                         </div>
-
-                        <button class="btn-edit-line" onclick={handleEdit}>
-                            Edit Line Item
-                        </button>
-
-                        <button class="btn-delete-line" onclick={handleDelete}>
-                            Delete Item
-                        </button>
-
-                        <a class="discount-quote-link" onclick={handleDiscountQuoteEntry}>
-                            <lightning-icon icon-name="utility:chevronleft" size="xx-small" class="dq-icon"></lightning-icon>
-                            Discount Quote Entry
-                        </a>
                     </div>
                 </div>
             </div>
 
-            <!-- ─── TABS NAVIGATION ─── -->
-            <div class="tabs-bar">
-                <button class={detailsTabClass} data-tab="details" onclick={handleTabClick}>Details</button>
-                <button class={relatedTabClass} data-tab="related" onclick={handleTabClick}>Related</button>
-                <button class={historyTabClass} data-tab="history" onclick={handleTabClick}>History</button>
-                <button class={filesTabClass} data-tab="files" onclick={handleTabClick}>Files</button>
-            </div>
+            <!-- ═══ CARD 2: TABS — Details, Related, History, Files ═══ -->
+            <div class="card-section tabs-card">
 
-            <!-- ─── TAB CONTENT ─── -->
-            <div class="tab-content">
-
-                <!-- DETAILS TAB -->
-                <template if:true={isDetailsTab}>
-                    <div class="details-grid">
-                        <!-- Row 1: Line Item Number | Subtotal -->
-                        <div class="detail-field">
-                            <span class="field-label">Line Item Number</span>
-                            <span class="field-value">{lineItemNumber}</span>
-                        </div>
-                        <div class="detail-field">
-                            <span class="field-label">Subtotal</span>
-                            <span class="field-value">{formattedSubtotal}</span>
-                        </div>
-
-                        <!-- Row 2: Product | Discount (Percentage) -->
-                        <div class="detail-field">
-                            <span class="field-label">Product</span>
-                            <a class="field-value field-link" onclick={navigateToProduct}>{productName}</a>
-                        </div>
-                        <div class="detail-field">
-                            <span class="field-label">Discount (Percentage)</span>
-                            <span class="field-value">{discountDisplay}</span>
-                        </div>
-
-                        <!-- Row 3: Quote Name | Total Price -->
-                        <div class="detail-field">
-                            <span class="field-label">Quote Name</span>
-                            <a class="field-value field-link" onclick={navigateToQuote}>{quoteName}</a>
-                        </div>
-                        <div class="detail-field">
-                            <span class="field-label">Total Price</span>
-                            <span class="field-value field-value-bold">{formattedTotalPrice}</span>
-                        </div>
-
-                        <!-- Row 4: List Price | Line Item Description -->
-                        <div class="detail-field">
-                            <span class="field-label">List Price</span>
-                            <span class="field-value">{formattedListPrice}</span>
-                        </div>
-                        <div class="detail-field">
-                            <span class="field-label">Line Item Description</span>
-                            <span class="field-value">{lineDescription}</span>
-                        </div>
-
-                        <!-- Row 5: Sales Price | (empty) -->
-                        <div class="detail-field">
-                            <span class="field-label">Sales Price</span>
-                            <span class="field-value">{formattedUnitPrice}</span>
-                        </div>
-                        <div class="detail-field">
-                            <!-- empty right cell -->
-                        </div>
-
-                        <!-- Row 6: Quantity -->
-                        <div class="detail-field">
-                            <span class="field-label">Quantity</span>
-                            <span class="field-value">{quantityDisplay}</span>
-                        </div>
-                        <div class="detail-field">
-                            <!-- empty right cell -->
-                        </div>
-                    </div>
-                </template>
-
-                <!-- RELATED TAB -->
-                <template if:true={isRelatedTab}>
-                    <div class="empty-tab-state">
-                        <lightning-icon icon-name="utility:connected_apps" size="large" class="empty-icon"></lightning-icon>
-                        <p class="empty-text">Related records will appear here.</p>
-                        <p class="empty-subtext">View related lists for this Quote Line Item.</p>
-                    </div>
-                </template>
-
-                <!-- HISTORY TAB -->
-                <template if:true={isHistoryTab}>
-                    <div class="empty-tab-state">
-                        <lightning-icon icon-name="utility:clock" size="large" class="empty-icon"></lightning-icon>
-                        <p class="empty-text">Field history tracking is not enabled.</p>
-                        <p class="empty-subtext">Ask your admin to enable field history for QuoteLineItem.</p>
-                    </div>
-                </template>
-
-                <!-- FILES TAB -->
-                <template if:true={isFilesTab}>
-                    <div class="empty-tab-state">
-                        <lightning-icon icon-name="utility:file" size="large" class="empty-icon"></lightning-icon>
-                        <p class="empty-text">No files attached.</p>
-                        <p class="empty-subtext">Upload files to this record to see them here.</p>
-                    </div>
-                </template>
-            </div>
-
-            <!-- ─── AUDIT FOOTER ─── -->
-            <div class="audit-footer">
-                <div class="audit-item">
-                    <div class="audit-avatar">
-                        <lightning-icon icon-name="standard:user" size="small"></lightning-icon>
-                    </div>
-                    <div class="audit-info">
-                        <span class="audit-label">CREATED BY</span>
-                        <span class="audit-name">{createdByName}</span>
-                        <span class="audit-date">{createdDate}</span>
-                    </div>
+                <!-- ─── TABS NAVIGATION ─── -->
+                <div class="tabs-bar">
+                    <button class={detailsTabClass} data-tab="details" onclick={handleTabClick}>
+                        <lightning-icon icon-name="utility:description" size="xx-small" class="tab-icon"></lightning-icon>
+                        Details
+                    </button>
+                    <button class={relatedTabClass} data-tab="related" onclick={handleTabClick}>
+                        <lightning-icon icon-name="utility:connected_apps" size="xx-small" class="tab-icon"></lightning-icon>
+                        Related
+                    </button>
+                    <button class={historyTabClass} data-tab="history" onclick={handleTabClick}>
+                        <lightning-icon icon-name="utility:clock" size="xx-small" class="tab-icon"></lightning-icon>
+                        History
+                    </button>
+                    <button class={filesTabClass} data-tab="files" onclick={handleTabClick}>
+                        <lightning-icon icon-name="utility:file" size="xx-small" class="tab-icon"></lightning-icon>
+                        Files
+                    </button>
                 </div>
-                <div class="audit-item">
-                    <div class="audit-avatar">
-                        <lightning-icon icon-name="standard:user" size="small"></lightning-icon>
-                    </div>
-                    <div class="audit-info">
-                        <span class="audit-label">LAST MODIFIED BY</span>
-                        <span class="audit-name">{lastModifiedByName}</span>
-                        <span class="audit-date">{lastModifiedDate}</span>
-                    </div>
+
+                <!-- ─── TAB CONTENT ─── -->
+                <div class="tab-content">
+
+                    <!-- DETAILS TAB -->
+                    <template if:true={isDetailsTab}>
+                        <div class="details-container">
+
+                            <!-- Section: Quote Line Item Information -->
+                            <div class="details-section">
+                                <div class="section-header">
+                                    <lightning-icon icon-name="standard:record" size="x-small" class="section-icon"></lightning-icon>
+                                    <h2 class="section-title">Quote Line Item Information</h2>
+                                </div>
+                                <div class="details-grid">
+                                    <!-- Row 1 -->
+                                    <div class="detail-field">
+                                        <span class="field-label">Line Item Number</span>
+                                        <span class="field-value">{lineItemNumber}</span>
+                                    </div>
+                                    <div class="detail-field">
+                                        <span class="field-label">Subtotal</span>
+                                        <span class="field-value">{formattedSubtotal}</span>
+                                    </div>
+
+                                    <!-- Row 2 -->
+                                    <div class="detail-field">
+                                        <span class="field-label">Product</span>
+                                        <a class="field-value field-link" onclick={navigateToProduct}>{productName}</a>
+                                    </div>
+                                    <div class="detail-field">
+                                        <span class="field-label">Discount</span>
+                                        <span class="field-value">{discountDisplay}</span>
+                                    </div>
+
+                                    <!-- Row 3 -->
+                                    <div class="detail-field">
+                                        <span class="field-label">Quote</span>
+                                        <a class="field-value field-link" onclick={navigateToQuote}>{quoteName}</a>
+                                    </div>
+                                    <div class="detail-field">
+                                        <span class="field-label">Total Price</span>
+                                        <span class="field-value field-value-highlight">{formattedTotalPrice}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section: Pricing Details -->
+                            <div class="details-section">
+                                <div class="section-header">
+                                    <lightning-icon icon-name="standard:price_book_entries" size="x-small" class="section-icon"></lightning-icon>
+                                    <h2 class="section-title">Pricing Details</h2>
+                                </div>
+                                <div class="details-grid">
+                                    <div class="detail-field">
+                                        <span class="field-label">List Price</span>
+                                        <span class="field-value">{formattedListPrice}</span>
+                                    </div>
+                                    <div class="detail-field">
+                                        <span class="field-label">Sales Price</span>
+                                        <span class="field-value">{formattedUnitPrice}</span>
+                                    </div>
+                                    <div class="detail-field">
+                                        <span class="field-label">Quantity</span>
+                                        <span class="field-value">{quantityDisplay}</span>
+                                    </div>
+                                    <div class="detail-field">
+                                        <span class="field-label">Line Item Description</span>
+                                        <span class="field-value field-desc">{lineDescription}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section: System Information -->
+                            <div class="details-section">
+                                <div class="section-header">
+                                    <lightning-icon icon-name="standard:recent" size="x-small" class="section-icon"></lightning-icon>
+                                    <h2 class="section-title">System Information</h2>
+                                </div>
+                                <div class="audit-grid">
+                                    <div class="audit-item">
+                                        <div class="audit-avatar">
+                                            <lightning-icon icon-name="standard:user" size="small"></lightning-icon>
+                                        </div>
+                                        <div class="audit-info">
+                                            <span class="audit-label">Created By</span>
+                                            <span class="audit-name">{createdByName}</span>
+                                            <span class="audit-date">{createdDate}</span>
+                                        </div>
+                                    </div>
+                                    <div class="audit-item">
+                                        <div class="audit-avatar">
+                                            <lightning-icon icon-name="standard:user" size="small"></lightning-icon>
+                                        </div>
+                                        <div class="audit-info">
+                                            <span class="audit-label">Last Modified By</span>
+                                            <span class="audit-name">{lastModifiedByName}</span>
+                                            <span class="audit-date">{lastModifiedDate}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+
+                    <!-- RELATED TAB -->
+                    <template if:true={isRelatedTab}>
+                        <div class="empty-tab-state">
+                            <div class="empty-icon-circle">
+                                <lightning-icon icon-name="utility:connected_apps" size="large" class="empty-icon"></lightning-icon>
+                            </div>
+                            <p class="empty-title">No Related Records</p>
+                            <p class="empty-subtext">Related records for this Quote Line Item will appear here.</p>
+                        </div>
+                    </template>
+
+                    <!-- HISTORY TAB -->
+                    <template if:true={isHistoryTab}>
+                        <div class="empty-tab-state">
+                            <div class="empty-icon-circle">
+                                <lightning-icon icon-name="utility:clock" size="large" class="empty-icon"></lightning-icon>
+                            </div>
+                            <p class="empty-title">Field History Not Enabled</p>
+                            <p class="empty-subtext">Ask your administrator to enable field history tracking for QuoteLineItem.</p>
+                        </div>
+                    </template>
+
+                    <!-- FILES TAB -->
+                    <template if:true={isFilesTab}>
+                        <div class="empty-tab-state">
+                            <div class="empty-icon-circle">
+                                <lightning-icon icon-name="utility:file" size="large" class="empty-icon"></lightning-icon>
+                            </div>
+                            <p class="empty-title">No Files Attached</p>
+                            <p class="empty-subtext">Upload files to this record to see them displayed here.</p>
+                        </div>
+                    </template>
                 </div>
             </div>
+
         </div>
     </template>
 </template>
